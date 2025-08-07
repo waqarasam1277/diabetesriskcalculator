@@ -720,6 +720,34 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+// Also send the data to Google Sheets via Google Apps Script
+fetch(https://script.google.com/macros/s/AKfycbx4CvrPTez0fzVzs_GgGDvlRXLozMdbjxQpNPD6vshNH9hHCf5NR_OPigo8YN1FTWH7/exec, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        patientId,
+        timestamp,
+        name: formElements.name.value,
+        age: formElements.age.value,
+        gender: formElements.gender.value,
+        weight: formElements.weight.value,
+        height: formElements.height.value,
+        fastingGlucose: formElements.fastingGlucose.value,
+        triglycerides: formElements.triglycerides.value,
+        hdl: formElements.hdl.value,
+        hba1c: formElements.hba1c.value || '',
+        diabetesDiagnosis: formElements.diabetesDiagnosis.value || '',
+        bmi: resultElements.bmi.textContent,
+        tyg: resultElements.tyg.textContent,
+        ratio: resultElements.ratio.textContent,
+        riskZone: resultElements.badge.textContent,
+        riskMessage: resultElements.message.textContent,
+        lifestyleAdvice: lifestyleAdviceText
+    })
+});
 
             // Show success message
             messageElements.save.textContent = 'Data saved successfully! CSV file downloaded.';
