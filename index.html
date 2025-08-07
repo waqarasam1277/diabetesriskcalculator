@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TyG Clinical Risk Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .form-section {
+            padding: 30px 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: "📋";
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .results-section {
+            background: #f7fafc;
+            padding: 30px 20px;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .results-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .results-title::before {
+            content: "📊";
+            font-size: 20px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .risk-zone {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .risk-low {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .risk-moderate {
+            background: #fef5e7;
+            color: #c05621;
+        }
+
+        .risk-high {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .risk-message {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .risk-message h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .risk-message h4::before {
+            content: "❤️";
+            font-size: 16px;
+        }
+
+        .risk-message p {
+            color: #4a5568;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .lifestyle-advice {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .lifestyle-advice h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lifestyle-advice h4::before {
+            content: "💡";
+            font-size: 16px;
+        }
+
+        .advice-list {
+            list-style: none;
+        }
+
+        .advice-list li {
+            color: #4a5568;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .advice-list li::before {
+            content: "•";
+            color: #4facfe;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .buttons {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .validation-error {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .validation-error.show {
+            display: block;
+        }
+
+        .save-message {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .save-message.show {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 0;
+                margin: 0;
+                min-height: 100vh;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .form-section, .results-section {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .form-section, .results-section {
+                padding: 15px;
+            }
+
+            .buttons {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>TyG Clinical Risk Calculator</h1>
+            <p>Metabolic and Diabetes Risk Assessment</p>
+        </div>
+
+        <div class="form-section">
+            <div class="section-title">Patient Information</div>
+            
+            <div class="validation-error" id="validationError"></div>
+            <div class="save-message" id="saveMessage"></div>
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Enter patient name">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" placeholder="Years" min="1" max="120">
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender">
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" placeholder="kg" step="0.1" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="height">Height (m)</label>
+                    <input type="number" id="height" placeholder="m" step="0.01" min="0.5" max="3">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="fastingGlucose">Fasting Glucose (mg/dL)</label>
+                <input type="number" id="fastingGlucose" placeholder="mg/dL" min="50" max="500">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="triglycerides">Triglycerides (mg/dL)</label>
+                    <input type="number" id="triglycerides" placeholder="mg/dL" min="10" max="1000">
+                </div>
+                <div class="form-group">
+                    <label for="hdl">HDL (mg/dL)</label>
+                    <input type="number" id="hdl" placeholder="mg/dL" min="10" max="200">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="hba1c">HbA1c (%)</label>
+                    <input type="number" id="hba1c" placeholder="%" step="0.1" min="3" max="20">
+                </div>
+                <div class="form-group">
+                    <label for="diabetesDiagnosis">Diabetes Status</label>
+                    <select id="diabetesDiagnosis">
+                        <option value="">Select</option>
+                        <option value="No">No</option>
+                        <option value="Prediabetes">Prediabetes</option>
+                        <option value="Diabetes">Diabetes</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-title">Risk Assessment Results</div>
+            
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-label">BMI</div>
+                    <div class="result-value" id="bmiValue">0</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">TyG Index</div>
+                    <div class="result-value" id="tygValue">0</div>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <div class="result-label">TG/HDL-C Ratio</div>
+                <div class="result-value" id="ratioValue">0</div>
+            </div>
+
+            <div class="risk-zone">
+                <div class="risk-badge" id="riskBadge">Low Risk</div>
+            </div>
+
+            <div class="risk-message">
+                <h4>Risk Assessment</h4>
+                <p id="riskMessageText"></p>
+            </div>
+
+            <div class="lifestyle-advice">
+                <h4>Lifestyle Recommendations</h4>
+                <ul class="advice-list" id="adviceList"></ul>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="saveAndCalculate()">
+                💾 Save & Calculate
+            </button>
+            <button class="btn btn-secondary" onclick="clearForm()">
+                🔄 Clear Form
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Form elements
+        const formElements = {
+            name: document.getElementById('name'),
+            age: document.getElementById('age'),
+            gender: document.getElementById('gender'),
+            weight: document.getElementById('weight'),
+            height: document.getElementById('height'),
+            fastingGlucose: document.getElementById('fastingGlucose'),
+            triglycerides: document.getElementById('triglycerides'),
+            hdl: document.getElementById('hdl'),
+            hba1c: document.getElementById('hba1c'),
+            diabetesDiagnosis: document.getElementById('diabetesDiagnosis')
+        };
+
+        // Result elements
+        const resultElements = {
+            section: document.getElementById('resultsSection'),
+            bmi: document.getElementById('bmiValue'),
+            tyg: document.getElementById('tygValue'),
+            ratio: document.getElementById('ratioValue'),
+            badge: document.getElementById('riskBadge'),
+            message: document.getElementById('riskMessageText'),
+            advice: document.getElementById('adviceList')
+        };
+
+        // Message elements
+        const messageElements = {
+            validation: document.getElementById('validationError'),
+            save: document.getElementById('saveMessage')
+        };
+
+        // Add event listeners for real-time calculation
+        Object.values(formElements).forEach(element => {
+            element.addEventListener('input', calculateResults);
+            element.addEventListener('change', calculateResults);
+        });
+
+        function calculateResults() {
+            const weight = parseFloat(formElements.weight.value);
+            const height = parseFloat(formElements.height.value);
+            const fastingGlucose = parseFloat(formElements.fastingGlucose.value);
+            const triglycerides = parseFloat(formElements.triglycerides.value);
+            const hdl = parseFloat(formElements.hdl.value);
+
+            // Check if we have the minimum required values
+            if (!weight || !height || !fastingGlucose || !triglycerides || !hdl) {
+                resultElements.section.classList.remove('show');
+                return;
+            }
+
+            // Calculate BMI
+            const bmi = weight / (height * height);
+
+            // Calculate TyG Index
+            const tygIndex = Math.log((triglycerides * fastingGlucose) / 2);
+
+            // Calculate TG/HDL-C Ratio
+            const tgHdlRatio = triglycerides / hdl;
+
+            // Determine risk zone
+            let riskZone, riskClass;
+            if (tygIndex < 7.5) {
+                riskZone = 'Low Risk';
+                riskClass = 'risk-low';
+            } else if (tygIndex >= 7.5 && tygIndex <= 8) {
+                riskZone = 'Moderate Risk';
+                riskClass = 'risk-moderate';
+            } else {
+                riskZone = 'High Risk';
+                riskClass = 'risk-high';
+            }
+
+            // Update results display
+            resultElements.bmi.textContent = bmi.toFixed(2);
+            resultElements.tyg.textContent = tygIndex.toFixed(2);
+            resultElements.ratio.textContent = tgHdlRatio.toFixed(2);
+            
+            resultElements.badge.textContent = riskZone;
+            resultElements.badge.className = `risk-badge ${riskClass}`;
+
+            // Generate risk message
+            const age = formElements.age.value;
+            const gender = formElements.gender.value;
+            const diabetesDiagnosis = formElements.diabetesDiagnosis.value;
+            
+            const riskMessage = generateRiskMessage(age, gender, diabetesDiagnosis, tygIndex, riskZone);
+            resultElements.message.textContent = riskMessage;
+
+            // Generate lifestyle advice
+            const lifestyleAdvice = generateLifestyleAdvice(bmi, diabetesDiagnosis);
+            resultElements.advice.innerHTML = '';
+            lifestyleAdvice.forEach(advice => {
+                const li = document.createElement('li');
+                li.textContent = advice;
+                resultElements.advice.appendChild(li);
+            });
+
+            // Show results section
+            resultElements.section.classList.add('show');
+        }
+
+        function generateRiskMessage(age, gender, diabetesDiagnosis, tygIndex, riskZone) {
+            const ageStr = age ? `${age}-year-old` : '';
+            const genderStr = gender ? gender.toLowerCase() : 'patient';
+            const tygStr = `TyG ${tygIndex.toFixed(1)} (${riskZone})`;
+            
+            let message = `${ageStr} ${genderStr} with ${tygStr}`;
+            
+            if (diabetesDiagnosis === 'Diabetes' && riskZone === 'High Risk') {
+                message += ' and Diabetes → High chance of kidney and eye complications. Needs urgent lifestyle intervention and medical follow-up.';
+            } else if (diabetesDiagnosis === 'Prediabetes' && riskZone === 'High Risk') {
+                message += ' and Prediabetes → High risk of developing diabetes. Immediate lifestyle changes recommended.';
+            } else if (riskZone === 'High Risk') {
+                message += ' → High metabolic risk. Consider diabetes screening and lifestyle modifications.';
+            } else if (riskZone === 'Moderate Risk') {
+                message += ' → Moderate metabolic risk. Preventive measures recommended.';
+            } else {
+                message += ' → Low metabolic risk. Continue healthy lifestyle habits.';
+            }
+            
+            return message;
+        }
+
+        function generateLifestyleAdvice(bmi, diabetesDiagnosis) {
+            const advice = [
+                'Eat more fiber, fruits, vegetables, and whole grains',
+                'Avoid sugary and fried foods',
+                'Exercise 30-40 minutes daily'
+            ];
+
+            if (bmi >= 25) {
+                advice.push('Recommend gradual weight loss');
+            }
+
+            if (diabetesDiagnosis === 'Diabetes') {
+                advice.push('Regular HbA1c, kidney, and eye checkups');
+            }
+
+            return advice;
+        }
+
+        function validateForm() {
+            const requiredFields = ['name', 'age', 'gender', 'weight', 'height', 'fastingGlucose', 'triglycerides', 'hdl'];
+            const missingFields = [];
+
+            requiredFields.forEach(field => {
+                if (!formElements[field].value || formElements[field].value === '') {
+                    missingFields.push(field);
+                }
+            });
+
+            return {
+                isValid: missingFields.length === 0,
+                missingFields
+            };
+        }
+
+        function saveAndCalculate() {
+            // Clear previous messages
+            messageElements.validation.classList.remove('show');
+            messageElements.save.classList.remove('show');
+
+            // Validate form
+            const validation = validateForm();
+            if (!validation.isValid) {
+                messageElements.validation.textContent = `Please fill in the following required fields: ${validation.missingFields.join(', ')}`;
+                messageElements.validation.classList.add('show');
+                return;
+            }
+
+            // Ensure calculations are up to date
+            calculateResults();
+
+            // Generate CSV data
+            const patientId = `P${Date.now()}`;
+            const timestamp = new Date().toISOString();
+            
+            const csvData = [
+                'Patient ID', 'Timestamp', 'Name', 'Age', 'Gender', 'Weight (kg)', 'Height (m)',
+                'Fasting Glucose (mg/dL)', 'Triglycerides (mg/dL)', 'HDL (mg/dL)', 'HbA1c (%)',
+                'Diabetes Diagnosis', 'BMI', 'TyG Index', 'TG/HDL-C Ratio', 'Risk Zone',
+                'Risk Message', 'Lifestyle Advice'
+            ].join(',') + '\n';
+
+            const lifestyleAdviceText = Array.from(resultElements.advice.children)
+                .map(li => li.textContent)
+                .join('; ');
+
+            const rowData = [
+                patientId,
+                timestamp,
+                formElements.name.value,
+                formElements.age.value,
+                formElements.gender.value,
+                formElements.weight.value,
+                formElements.height.value,
+                formElements.fastingGlucose.value,
+                formElements.triglycerides.value,
+                formElements.hdl.value,
+                formElements.hba1c.value || '',
+                formElements.diabetesDiagnosis.value || '',
+                resultElements.bmi.textContent,
+                resultElements.tyg.textContent,
+                resultElements.ratio.textContent,
+                resultElements.badge.textContent,
+                `"${resultElements.message.textContent}"`,
+                `"${lifestyleAdviceText}"`
+            ].join(',');
+
+            const fullCsvData = csvData + rowData;
+
+            // Download CSV file
+            const blob = new Blob([fullCsvData], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `patient_${patientId}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Show success message
+            messageElements.save.textContent = 'Data saved successfully! CSV file downloaded.';
+            messageElements.save.classList.add('show');
+        }
+
+        function clearForm() {
+            // Clear all form fields
+            Object.values(formElements).forEach(element => {
+                element.value = '';
+            });
+
+            // Hide results section
+            resultElements.section.classList.remove('show');
+
+            // Clear messages
+            messageElements.validation.classList.remove('show');
+            messageElements.save.classList.remove('show');
+        }
+    </script>
+</body>
+</html>
+
