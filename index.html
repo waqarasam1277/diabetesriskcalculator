@@ -663,15 +663,15 @@
         }
 
         function validateForm() {
-            const requiredFields = ['name', 'age', 'gender', 'weight', 'height', 'fastingGlucose', 'triglycerides', 'hdl'];
+            const requiredFields = ["name", "age", "gender", "weight", "height", "fastingGlucose", "triglycerides", "hdl"];
             const missingFields = [];
             const invalidFields = [];
 
             requiredFields.forEach(field => {
                 const value = formElements[field].value;
-                if (!value || value === '') {
+                if (!value || value === "") {
                     missingFields.push(field);
-                } else if (['age', 'weight', 'height', 'fastingGlucose', 'triglycerides', 'hdl'].includes(field)) {
+                } else if (["age", "weight", "height", "fastingGlucose", "triglycerides", "hdl"].includes(field)) {
                     const numValue = parseFloat(value);
                     if (isNaN(numValue) || numValue <= 0) {
                         invalidFields.push(field);
@@ -694,13 +694,13 @@
             // Validate form
             const validation = validateForm();
             if (!validation.isValid) {
-                let errorMessage = '';
+                let errorMessage = "";
                 if (validation.missingFields.length > 0) {
-                    errorMessage += `Please fill in the following required fields: ${validation.missingFields.join(', ')}`;
+                    errorMessage += `Please fill in the following required fields: ${validation.missingFields.join(", ")}`;
                 }
                 if (validation.invalidFields.length > 0) {
-                    if (errorMessage) errorMessage += '. ';
-                    errorMessage += `Please enter valid positive numbers for: ${validation.invalidFields.join(', ')}`;
+                    if (errorMessage) errorMessage += ". ";
+                    errorMessage += `Please enter valid positive numbers for: ${validation.invalidFields.join(", ")}`;
                 }
                 messageElements.validation.textContent = errorMessage;
                 messageElements.validation.classList.add('show');
@@ -715,15 +715,15 @@
             const timestamp = new Date().toISOString();
             
             const csvData = [
-                'Patient ID', 'Timestamp', 'Name', 'Age', 'Gender', 'Weight (kg)', 'Height (m)',
-                'Fasting Glucose (mg/dL)', 'Triglycerides (mg/dL)', 'HDL (mg/dL)', 'HbA1c (%)',
-                'Diabetes Diagnosis', 'BMI', 'TyG Index', 'TG/HDL-C Ratio', 'Risk Zone',
-                'Risk Message', 'Lifestyle Advice'
-            ].join(',') + '\n';
+                "Patient ID", "Timestamp", "Name", "Age", "Gender", "Weight (kg)", "Height (m)",
+                "Fasting Glucose (mg/dL)", "Triglycerides (mg/dL)", "HDL (mg/dL)", "HbA1c (%)",
+                "Diabetes Diagnosis", "BMI", "TyG Index", "TG/HDL-C Ratio", "Risk Zone",
+                "Risk Message", "Lifestyle Advice"
+            ].join(",") + "\n";
 
             const lifestyleAdviceText = Array.from(resultElements.advice.children)
                 .map(li => li.textContent)
-                .join('; ');
+                .join("; ");
 
             const rowData = [
                 patientId,
@@ -737,31 +737,31 @@
                 formElements.triglycerides.value,
                 formElements.hdl.value,
                 formElements.hba1c.value || '',
-                formElements.diabetesDiagnosis.value || '',
+                formElements.diabetesDiagnosis.value || "",
                 resultElements.bmi.textContent,
                 resultElements.tyg.textContent,
                 resultElements.ratio.textContent,
                 resultElements.badge.textContent,
                 `"${resultElements.message.textContent}"`,
                 `"${lifestyleAdviceText}"`
-            ].join(',');
+            ].join(",");
 
             const fullCsvData = csvData + rowData;
 
             // Download CSV file
-            const blob = new Blob([fullCsvData], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
+            const blob = new Blob([fullCsvData], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `patient_${patientId}.csv`);
-            link.style.visibility = 'hidden';
+            link.setAttribute("href", url);
+            link.setAttribute("download", `patient_${patientId}.csv`);
+            link.style.visibility = "hidden";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
 
             // Also send the data to Google Sheets via Google Apps Script
             try {
-                fetch('https://script.google.com/macros/s/AKfycbx4CvrPTez0fzVzs_GgGDvlRXLozMdbjxQpNPD6vshNH9hHCf5NR_OPigo8YN1FTWH7/exec', {
+                fetch("https://script.google.com/macros/s/AKfycbx4CvrPTez0fzVzs_GgGDvlRXLozMdbjxQpNPD6vshNH9hHCf5NR_OPigo8YN1FTWH7/exec", {
                     method: "POST",
                     mode: "no-cors",
                     headers: {
@@ -778,8 +778,8 @@
                         fastingGlucose: formElements.fastingGlucose.value,
                         triglycerides: formElements.triglycerides.value,
                         hdl: formElements.hdl.value,
-                        hba1c: formElements.hba1c.value || '',
-                        diabetesDiagnosis: formElements.diabetesDiagnosis.value || '',
+                        hba1c: formElements.hba1c.value || "",
+                        diabetesDiagnosis: formElements.diabetesDiagnosis.value || "",
                         bmi: resultElements.bmi.textContent,
                         tyg: resultElements.tyg.textContent,
                         ratio: resultElements.ratio.textContent,
@@ -788,14 +788,14 @@
                         lifestyleAdvice: lifestyleAdviceText
                     })
                 }).catch(error => {
-                    console.log('Google Sheets sync failed (this is normal):', error);
+                    console.log("Google Sheets sync failed (this is normal):", error);
                 });
             } catch (error) {
-                console.log('Google Sheets sync error (this is normal):', error);
+                console.log("Google Sheets sync error (this is normal):", error);
             }
 
             // Show success message
-            messageElements.save.textContent = 'Data saved successfully! CSV file downloaded.';
+            messageElements.save.textContent = "Data saved successfully! CSV file downloaded.";
             messageElements.save.classList.add('show');
             
             // Hide success message after 3 seconds
@@ -807,7 +807,7 @@
         function clearForm() {
             // Clear all form fields
             Object.values(formElements).forEach(element => {
-                element.value = '';
+                element.value = "";
             });
 
             // Hide results section
