@@ -755,17 +755,6 @@
 
             const fullCsvData = csvData + rowData;
 
-            // Download CSV file
-            const blob = new Blob([fullCsvData], { type: "text/csv;charset=utf-8;" });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `patient_${patientId}.csv`);
-            link.style.visibility = "hidden";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
             // Also send the data to Google Sheets via Google Apps Script
             try {
                 fetch("https://script.google.com/macros/s/AKfycbx4CvrPTez0fzVzs_GgGDvlRXLozMdbjxQpNPD6vshNH9hHCf5NR_OPigo8YN1FTWH7/exec", {
