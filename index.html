@@ -533,6 +533,10 @@
             save: document.getElementById('saveMessage')
         };
 
+        // Export button
+        const exportBtn = document.getElementById('exportBtn');
+
+        // Store calculated data for export
         // Add event listeners for real-time calculation
         Object.values(formElements).forEach(element => {
             element.addEventListener('input', debounce(calculateResults, 300));
