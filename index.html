@@ -532,11 +532,27 @@
 
         // Add event listeners for real-time calculation
         Object.values(formElements).forEach(element => {
-            element.addEventListener('input', calculateResults);
+            element.addEventListener('input', debounce(calculateResults, 300));
             element.addEventListener('change', calculateResults);
         });
 
+        // Debounce function to prevent excessive calculations during typing
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         function calculateResults() {
+            // Clear any previous validation errors when user starts typing
+            messageElements.validation.classList.remove('show');
+            
             const weight = parseFloat(formElements.weight.value);
             const height = parseFloat(formElements.height.value);
             const fastingGlucose = parseFloat(formElements.fastingGlucose.value);
@@ -545,6 +561,12 @@
 
             // Check if we have the minimum required values
             if (!weight || !height || !fastingGlucose || !triglycerides || !hdl) {
+                resultElements.section.classList.remove('show');
+                return;
+            }
+
+            // Validate numeric ranges
+            if (weight <= 0 || height <= 0 || fastingGlucose <= 0 || triglycerides <= 0 || hdl <= 0) {
                 resultElements.section.classList.remove('show');
                 return;
             }
@@ -643,16 +665,24 @@
         function validateForm() {
             const requiredFields = ['name', 'age', 'gender', 'weight', 'height', 'fastingGlucose', 'triglycerides', 'hdl'];
             const missingFields = [];
+            const invalidFields = [];
 
             requiredFields.forEach(field => {
-                if (!formElements[field].value || formElements[field].value === '') {
+                const value = formElements[field].value;
+                if (!value || value === '') {
                     missingFields.push(field);
+                } else if (['age', 'weight', 'height', 'fastingGlucose', 'triglycerides', 'hdl'].includes(field)) {
+                    const numValue = parseFloat(value);
+                    if (isNaN(numValue) || numValue <= 0) {
+                        invalidFields.push(field);
+                    }
                 }
             });
 
             return {
-                isValid: missingFields.length === 0,
-                missingFields
+                isValid: missingFields.length === 0 && invalidFields.length === 0,
+                missingFields,
+                invalidFields
             };
         }
 
@@ -664,7 +694,15 @@
             // Validate form
             const validation = validateForm();
             if (!validation.isValid) {
-                messageElements.validation.textContent = `Please fill in the following required fields: ${validation.missingFields.join(', ')}`;
+                let errorMessage = '';
+                if (validation.missingFields.length > 0) {
+                    errorMessage += `Please fill in the following required fields: ${validation.missingFields.join(', ')}`;
+                }
+                if (validation.invalidFields.length > 0) {
+                    if (errorMessage) errorMessage += '. ';
+                    errorMessage += `Please enter valid positive numbers for: ${validation.invalidFields.join(', ')}`;
+                }
+                messageElements.validation.textContent = errorMessage;
                 messageElements.validation.classList.add('show');
                 return;
             }
@@ -720,38 +758,50 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-// Also send the data to Google Sheets via Google Apps Script
-fetch(https://script.google.com/macros/s/AKfycbx4CvrPTez0fzVzs_GgGDvlRXLozMdbjxQpNPD6vshNH9hHCf5NR_OPigo8YN1FTWH7/exec, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        patientId,
-        timestamp,
-        name: formElements.name.value,
-        age: formElements.age.value,
-        gender: formElements.gender.value,
-        weight: formElements.weight.value,
-        height: formElements.height.value,
-        fastingGlucose: formElements.fastingGlucose.value,
-        triglycerides: formElements.triglycerides.value,
-        hdl: formElements.hdl.value,
-        hba1c: formElements.hba1c.value || '',
-        diabetesDiagnosis: formElements.diabetesDiagnosis.value || '',
-        bmi: resultElements.bmi.textContent,
-        tyg: resultElements.tyg.textContent,
-        ratio: resultElements.ratio.textContent,
-        riskZone: resultElements.badge.textContent,
-        riskMessage: resultElements.message.textContent,
-        lifestyleAdvice: lifestyleAdviceText
-    })
-});
+
+            // Also send the data to Google Sheets via Google Apps Script
+            try {
+                fetch('https://script.google.com/macros/s/AKfycbx4CvrPTez0fzVzs_GgGDvlRXLozMdbjxQpNPD6vshNH9hHCf5NR_OPigo8YN1FTWH7/exec', {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        patientId,
+                        timestamp,
+                        name: formElements.name.value,
+                        age: formElements.age.value,
+                        gender: formElements.gender.value,
+                        weight: formElements.weight.value,
+                        height: formElements.height.value,
+                        fastingGlucose: formElements.fastingGlucose.value,
+                        triglycerides: formElements.triglycerides.value,
+                        hdl: formElements.hdl.value,
+                        hba1c: formElements.hba1c.value || '',
+                        diabetesDiagnosis: formElements.diabetesDiagnosis.value || '',
+                        bmi: resultElements.bmi.textContent,
+                        tyg: resultElements.tyg.textContent,
+                        ratio: resultElements.ratio.textContent,
+                        riskZone: resultElements.badge.textContent,
+                        riskMessage: resultElements.message.textContent,
+                        lifestyleAdvice: lifestyleAdviceText
+                    })
+                }).catch(error => {
+                    console.log('Google Sheets sync failed (this is normal):', error);
+                });
+            } catch (error) {
+                console.log('Google Sheets sync error (this is normal):', error);
+            }
 
             // Show success message
             messageElements.save.textContent = 'Data saved successfully! CSV file downloaded.';
             messageElements.save.classList.add('show');
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                messageElements.save.classList.remove('show');
+            }, 3000);
         }
 
         function clearForm() {
