@@ -514,6 +514,198 @@
             display: block;
         }
 
+        .risk-gauge-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .gauge-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .gauge-title::before {
+            content: "📊";
+            font-size: 18px;
+        }
+
+        .risk-gauge {
+            position: relative;
+            width: 280px;
+            height: 140px;
+            margin: 0 auto 20px;
+        }
+
+        .gauge-background {
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(
+                from 180deg,
+                #c6f6d5 0deg 108deg,
+                #fef5e7 108deg 144deg,
+                #fed7d7 144deg 180deg
+            );
+            border-radius: 140px 140px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gauge-background::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 100px;
+            background: white;
+            border-radius: 100px 100px 0 0;
+        }
+
+        .gauge-needle {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            height: 120px;
+            background: #2d3748;
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(-90deg);
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px 2px 0 0;
+            z-index: 10;
+        }
+
+        .gauge-needle::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: #2d3748;
+            border-radius: 50%;
+        }
+
+        .gauge-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .gauge-value {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            z-index: 15;
+        }
+
+        .reference-values {
+            background: #f7fafc;
+            padding: 25px 20px;
+            border-top: 3px solid #4facfe;
+        }
+
+        .reference-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reference-title::before {
+            content: "📋";
+            font-size: 20px;
+        }
+
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .reference-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .reference-card h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reference-ranges {
+            list-style: none;
+        }
+
+        .reference-ranges li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .reference-ranges li:last-child {
+            border-bottom: none;
+        }
+
+        .range-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .range-value {
+            color: #718096;
+            font-family: 'Courier New', monospace;
+        }
+
+        .range-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .indicator-low { background: #68d391; }
+        .indicator-moderate { background: #f6ad55; }
+        .indicator-high { background: #fc8181; }
+        .indicator-normal { background: #68d391; }
+        .indicator-prediabetes { background: #f6ad55; }
+        .indicator-diabetes { background: #fc8181; }
+        .indicator-underweight { background: #90cdf4; }
+        .indicator-overweight { background: #f6ad55; }
+        .indicator-obese { background: #fc8181; }
+
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -533,6 +725,24 @@
             .results-grid {
                 grid-template-columns: 1fr;
                 gap: 15px;
+            }
+
+            .risk-gauge {
+                width: 240px;
+                height: 120px;
+            }
+
+            .gauge-background::after {
+                width: 160px;
+                height: 80px;
+            }
+
+            .gauge-needle {
+                height: 100px;
+            }
+
+            .reference-grid {
+                grid-template-columns: 1fr;
             }
 
             .header {
@@ -659,6 +869,20 @@
                 <div class="risk-badge" id="riskBadge">Low Risk</div>
             </div>
 
+            <div class="risk-gauge-container">
+                <div class="gauge-title">Risk Level Visualization</div>
+                <div class="risk-gauge">
+                    <div class="gauge-background"></div>
+                    <div class="gauge-needle" id="gaugeNeedle"></div>
+                    <div class="gauge-value" id="gaugeValue">0.0</div>
+                </div>
+                <div class="gauge-labels">
+                    <span>Low Risk<br>&lt; 8.5</span>
+                    <span>Moderate<br>8.5 - 8.99</span>
+                    <span>High Risk<br>&gt; 8.99</span>
+                </div>
+            </div>
+
             <div class="risk-message">
                 <h4>Risk Assessment</h4>
                 <p id="riskMessageText"></p>
@@ -680,6 +904,128 @@
             <button class="btn btn-secondary" onclick="clearForm()">
                 🔄 Clear Form
             </button>
+        </div>
+    </div>
+
+    <div class="reference-values">
+        <div class="container">
+            <div class="reference-title">Clinical Reference Values</div>
+            <div class="reference-grid">
+                <div class="reference-card">
+                    <h4>🎯 TyG Index</h4>
+                    <ul class="reference-ranges">
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-low"></span>
+                                Low Risk
+                            </span>
+                            <span class="range-value">&lt; 8.5</span>
+                        </li>
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-moderate"></span>
+                                Moderate Risk
+                            </span>
+                            <span class="range-value">8.5 - 8.99</span>
+                        </li>
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-high"></span>
+                                High Risk
+                            </span>
+                            <span class="range-value">≥ 9.0</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="reference-card">
+                    <h4>⚖️ BMI (Body Mass Index)</h4>
+                    <ul class="reference-ranges">
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-underweight"></span>
+                                Underweight
+                            </span>
+                            <span class="range-value">&lt; 18.5</span>
+                        </li>
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-normal"></span>
+                                Normal
+                            </span>
+                            <span class="range-value">18.5 - 24.9</span>
+                        </li>
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-overweight"></span>
+                                Overweight
+                            </span>
+                            <span class="range-value">25.0 - 29.9</span>
+                        </li>
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-obese"></span>
+                                Obese
+                            </span>
+                            <span class="range-value">≥ 30.0</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="reference-card">
+                    <h4>🩸 Fasting Glucose</h4>
+                    <ul class="reference-ranges">
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-normal"></span>
+                                Normal
+                            </span>
+                            <span class="range-value">&lt; 100 mg/dL</span>
+                        </li>
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-prediabetes"></span>
+                                Prediabetes
+                            </span>
+                            <span class="range-value">100 - 125 mg/dL</span>
+                        </li>
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-diabetes"></span>
+                                Diabetes
+                            </span>
+                            <span class="range-value">≥ 126 mg/dL</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="reference-card">
+                    <h4>🔬 HbA1c (Hemoglobin A1c)</h4>
+                    <ul class="reference-ranges">
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-normal"></span>
+                                Normal
+                            </span>
+                            <span class="range-value">&lt; 5.7%</span>
+                        </li>
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-prediabetes"></span>
+                                Prediabetes
+                            </span>
+                            <span class="range-value">5.7 - 6.4%</span>
+                        </li>
+                        <li>
+                            <span class="range-label">
+                                <span class="range-indicator indicator-diabetes"></span>
+                                Diabetes
+                            </span>
+                            <span class="range-value">≥ 6.5%</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -912,6 +1258,9 @@
             resultElements.badge.textContent = riskZone;
             resultElements.badge.className = `risk-badge ${riskClass}`;
 
+            // Update risk gauge
+            updateRiskGauge(tygIndex);
+
             // Generate risk message
             const age = formElements.age.value;
             const gender = formElements.gender.value;
@@ -934,6 +1283,33 @@
             
             // Show export button
             exportBtn.style.display = 'block';
+        }
+
+        function updateRiskGauge(tygValue) {
+            const needle = document.getElementById('gaugeNeedle');
+            const gaugeValueDisplay = document.getElementById('gaugeValue');
+            
+            // Update gauge value display
+            gaugeValueDisplay.textContent = tygValue.toFixed(2);
+            
+            // Calculate needle rotation (-90deg to 90deg, total 180deg range)
+            let rotation;
+            
+            if (tygValue < 8.5) {
+                // Low risk: -90deg to -30deg (60deg range)
+                const normalizedValue = Math.max(0, Math.min(1, (tygValue - 7.5) / 1.0));
+                rotation = -90 + (normalizedValue * 60);
+            } else if (tygValue <= 8.99) {
+                // Moderate risk: -30deg to 30deg (60deg range)
+                const normalizedValue = (tygValue - 8.5) / 0.49;
+                rotation = -30 + (normalizedValue * 60);
+            } else {
+                // High risk: 30deg to 90deg (60deg range)
+                const normalizedValue = Math.min(1, (tygValue - 9.0) / 1.0);
+                rotation = 30 + (normalizedValue * 60);
+            }
+            
+            needle.style.transform = `translateX(-50%) rotate(${rotation}deg)`;
         }
 
         function generateRiskMessage(age, gender, diabetesDiagnosis, tygIndex, riskZone) {
@@ -1213,4 +1589,3 @@
     </script>
 </body>
 </html>
-
