@@ -3,218 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Generator - Create Beautiful Documents</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Metabolic Disorder Risk Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>PDF Generator</span>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b border-medical-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-heartbeat text-medical-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">Metabolic Risk Calculator</h1>
                 </div>
-                <nav class="nav">
-                    <a href="#features" class="nav-link">Features</a>
-                    <a href="#generator" class="nav-link">Generator</a>
-                    <a href="#about" class="nav-link">About</a>
-                </nav>
-            </div>
-        </header>
-
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <h1 class="hero-title">Create Beautiful PDFs <span class="gradient-text">Instantly</span></h1>
-                <p class="hero-description">Transform your content into professional PDF documents with our powerful generator. Fast, reliable, and beautifully designed.</p>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary" onclick="scrollToGenerator()">
-                        <i class="fas fa-rocket"></i>
-                        Get Started
+                <div class="flex items-center space-x-4">
+                    <button id="calculatorTab" class="nav-tab active px-4 py-2 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-calculator mr-2"></i>Calculator
                     </button>
-                    <button class="btn btn-secondary">
-                        <i class="fas fa-play"></i>
-                        Watch Demo
+                    <button id="patientsTab" class="nav-tab px-4 py-2 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-users mr-2"></i>Patients
+                    </button>
+                    <button id="loginBtn" class="bg-medical-600 text-white px-4 py-2 rounded-lg hover:bg-medical-700 transition-colors">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
                     </button>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="floating-card">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>PDF Ready</span>
-                </div>
-            </div>
-        </section>
+        </div>
+    </nav>
 
-        <!-- Features Section -->
-        <section id="features" class="features">
-            <div class="section-header">
-                <h2>Powerful Features</h2>
-                <p>Everything you need to create professional documents</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Lightning Fast</h3>
-                    <p>Generate PDFs in seconds with our optimized engine</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <h3>Beautiful Design</h3>
-                    <p>Professional templates and customizable styling options</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Mobile Friendly</h3>
-                    <p>Works perfectly on all devices and screen sizes</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Secure & Private</h3>
-                    <p>Your documents are processed securely and never stored</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- PDF Generator Section -->
-        <section id="generator" class="generator">
-            <div class="section-header">
-                <h2>PDF Generator</h2>
-                <p>Create your document and download as PDF</p>
-            </div>
-            
-            <div class="generator-container">
-                <div class="editor-panel">
-                    <div class="panel-header">
-                        <h3><i class="fas fa-edit"></i> Content Editor</h3>
-                        <div class="editor-controls">
-                            <button class="control-btn" onclick="clearContent()" title="Clear All">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="control-btn" onclick="loadSample()" title="Load Sample">
-                                <i class="fas fa-file-import"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="title">Document Title</label>
-                        <input type="text" id="title" placeholder="Enter document title..." value="My Document">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="content">Content</label>
-                        <textarea id="content" placeholder="Enter your content here...">Welcome to our PDF Generator!
-
-This is a sample document that demonstrates the capabilities of our PDF generation tool.
-
-Key Features:
-• Fast and reliable PDF generation
-• Beautiful formatting and styling
-• Mobile-responsive design
-• Secure document processing
-
-You can edit this content and generate a professional PDF document instantly.</textarea>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="author">Author</label>
-                            <input type="text" id="author" placeholder="Author name" value="PDF Generator">
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <input type="text" id="subject" placeholder="Document subject" value="Generated Document">
-                        </div>
-                    </div>
-                    
-                    <div class="generate-section">
-                        <button id="generateBtn" class="btn btn-primary btn-large" onclick="generatePDF()">
-                            <i class="fas fa-file-pdf"></i>
-                            Generate PDF
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Login Modal -->
+        <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-900">Healthcare Staff Login</h2>
+                        <button id="closeLogin" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
                         </button>
-                        <div class="generation-status" id="status"></div>
                     </div>
+                    <form id="loginForm">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="loginEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                            <input type="password" id="loginPassword" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                        </div>
+                        <button type="submit" class="w-full bg-medical-600 text-white py-2 px-4 rounded-lg hover:bg-medical-700 transition-colors">
+                            Sign In
+                        </button>
+                    </form>
                 </div>
-                
-                <div class="preview-panel">
-                    <div class="panel-header">
-                        <h3><i class="fas fa-eye"></i> Live Preview</h3>
-                        <div class="preview-controls">
-                            <button class="control-btn" onclick="refreshPreview()" title="Refresh Preview">
-                                <i class="fas fa-sync-alt"></i>
+            </div>
+        </div>
+
+        <!-- Calculator Section -->
+        <div id="calculatorSection" class="section active">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Patient Input Form -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <i class="fas fa-user-md text-medical-600 mr-3"></i>
+                        Patient Information
+                    </h2>
+                    
+                    <form id="patientForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                                <input type="text" id="fullName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Age *</label>
+                                <input type="number" id="age" required min="1" max="120" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
+                                <select id="gender" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Weight (kg) *</label>
+                                <input type="number" id="weight" required step="0.1" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Height (m) *</label>
+                                <input type="number" id="height" required step="0.01" min="0.5" max="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Fasting Glucose (mg/dL) *</label>
+                                <input type="number" id="glucose" required step="0.1" min="50" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Triglycerides (mg/dL) *</label>
+                                <input type="number" id="triglycerides" required step="0.1" min="10" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">HDL (mg/dL) *</label>
+                                <input type="number" id="hdl" required step="0.1" min="10" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">HbA1c (%) *</label>
+                                <input type="number" id="hba1c" required step="0.1" min="3" max="20" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Diabetes Diagnosis *</label>
+                            <select id="diabetes" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                                <option value="">Select Diagnosis</option>
+                                <option value="No">No Diabetes</option>
+                                <option value="Prediabetes">Prediabetes</option>
+                                <option value="Diabetes">Diabetes</option>
+                            </select>
+                        </div>
+
+                        <div class="flex space-x-4 pt-4">
+                            <button type="submit" class="flex-1 bg-medical-600 text-white py-3 px-6 rounded-lg hover:bg-medical-700 transition-colors font-medium">
+                                <i class="fas fa-calculator mr-2"></i>Calculate Risk
+                            </button>
+                            <button type="button" id="clearForm" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-eraser mr-2"></i>Clear
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <i class="fas fa-chart-line text-medical-600 mr-3"></i>
+                        Risk Assessment Results
+                    </h2>
+                    
+                    <div id="resultsContainer" class="hidden">
+                        <!-- Calculated Values -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-gray-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-medical-600" id="bmiValue">--</div>
+                                <div class="text-sm text-gray-600">BMI</div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-medical-600" id="tygValue">--</div>
+                                <div class="text-sm text-gray-600">TyG Index</div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-medical-600" id="ratioValue">--</div>
+                                <div class="text-sm text-gray-600">TG/HDL Ratio</div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Category -->
+                        <div id="riskCategory" class="p-4 rounded-lg mb-6 text-center">
+                            <div class="text-xl font-bold mb-2" id="riskLevel">Risk Level</div>
+                            <div class="text-sm" id="riskDescription">Risk Description</div>
+                        </div>
+
+                        <!-- AI Recommendations -->
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                            <h3 class="font-bold text-blue-900 mb-2 flex items-center">
+                                <i class="fas fa-robot mr-2"></i>AI Health Recommendations
+                            </h3>
+                            <div id="aiRecommendations" class="text-blue-800">
+                                <div class="flex items-center justify-center py-4">
+                                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-2"></div>
+                                    Generating personalized recommendations...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button id="saveResults" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-save mr-2"></i>Save Results
+                            </button>
+                            <button id="exportResults" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-download mr-2"></i>Export
                             </button>
                         </div>
                     </div>
-                    <div class="preview-content" id="preview">
-                        <div class="document-preview">
-                            <h1 id="previewTitle">My Document</h1>
-                            <div class="document-meta">
-                                <span><i class="fas fa-user"></i> <span id="previewAuthor">PDF Generator</span></span>
-                                <span><i class="fas fa-calendar"></i> <span id="previewDate"></span></span>
-                            </div>
-                            <div class="document-content" id="previewContent">
-                                <p>Welcome to our PDF Generator!</p>
-                                <p>This is a sample document that demonstrates the capabilities of our PDF generation tool.</p>
-                                <p><strong>Key Features:</strong></p>
-                                <ul>
-                                    <li>Fast and reliable PDF generation</li>
-                                    <li>Beautiful formatting and styling</li>
-                                    <li>Mobile-responsive design</li>
-                                    <li>Secure document processing</li>
-                                </ul>
-                                <p>You can edit this content and generate a professional PDF document instantly.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="logo">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>PDF Generator</span>
+                    <div id="noResults" class="text-center py-12 text-gray-500">
+                        <i class="fas fa-clipboard-list text-4xl mb-4"></i>
+                        <p>Enter patient information and click "Calculate Risk" to see results</p>
                     </div>
-                    <p>Create beautiful PDF documents with ease.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Features</h4>
-                    <ul>
-                        <li><a href="#features">Fast Generation</a></li>
-                        <li><a href="#features">Beautiful Design</a></li>
-                        <li><a href="#features">Mobile Friendly</a></li>
-                        <li><a href="#features">Secure & Private</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#generator">Generator</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 PDF Generator. All rights reserved.</p>
+        </div>
+
+        <!-- Patients Section -->
+        <div id="patientsSection" class="section hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-users text-medical-600 mr-3"></i>
+                        Patient Records
+                    </h2>
+                    <div class="flex space-x-4">
+                        <input type="text" id="searchPatients" placeholder="Search patients..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent">
+                        <button id="exportAllBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-file-excel mr-2"></i>Export All
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age/Gender</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">BMI</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TyG Index</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Level</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientsTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Patient records will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="noPatients" class="text-center py-12 text-gray-500">
+                    <i class="fas fa-user-friends text-4xl mb-4"></i>
+                    <p>No patient records found</p>
+                </div>
             </div>
-        </footer>
+        </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="fixed top-4 right-4 z-50 hidden">
+        <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
+            <div class="flex items-center">
+                <div id="toastIcon" class="mr-3"></div>
+                <div id="toastMessage" class="text-sm font-medium text-gray-900"></div>
+            </div>
+        </div>
     </div>
 
-    <script src="script.js" type="module"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
