@@ -105,7 +105,7 @@ async function generatePDF() {
         
         // Create PDF
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
         
         // Calculate dimensions
         const pdfWidth = pdf.internal.pageSize.getWidth();
